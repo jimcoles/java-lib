@@ -1,0 +1,15 @@
+<EntityType>
+    <oid>0</oid>
+    <codeName>FacilityItem</codeName>
+    <description>description</description>
+    <serviceGroupOid>0</serviceGroupOid>
+</EntityType>
+
+<EntityType>
+<oid>0</oid>
+<codeName>Computer</codeName>
+<description>description</description>
+<serviceGroupOid>0</serviceGroupOid>
+</EntityType>
+
+
