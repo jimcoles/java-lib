@@ -17,6 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.Reader;
 import java.sql.*;
 import java.text.DateFormat;
@@ -189,6 +190,28 @@ public class JdbcUtil {
         }
         return retDoc;
     }
+
+  /** Returns a org.w3c.dom.Document given a sql select string. */
+  public static Document getDocFromSQL(Connection conn, String strSql, String name,
+                                       DocumentBuilderFactory dbf)
+    throws Exception
+  {
+    Document retDoc = null;
+    PreparedStatement ps = conn.prepareStatement(strSql);
+    try {
+      ResultSet rs = ps.executeQuery();
+      try {
+        retDoc = JdbcUtil.toXMLDoc(rs, name, dbf.newDocumentBuilder());
+      }
+      finally {
+        JdbcUtil.safeClose(rs);
+      }
+    }
+    finally {
+      JdbcUtil.safeClose(ps);
+    }
+    return retDoc;
+  }
 
     public static String getString(ResultSet rs, String name, String ifnull)
             throws SQLException {
