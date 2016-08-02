@@ -14,11 +14,14 @@ package org.jkcsoft.java.beans;
  *
  *
  */
-public interface ISystemMeta
-{
-  /** Looks up sub-system meta objects by string id */
-  public ISystemMeta getSubSystemMeta(String progid) throws Exception;
+public interface ISystemMeta {
+    /**
+     * Looks up sub-system meta objects by string id
+     */
+    public ISystemMeta getSubSystemMeta(String progid) throws Exception;
 
-  /** Looks up IEntityMeta by string id. */
-  public IEntityMeta getEntityMeta(String cls) throws Exception;
+    /**
+     * Looks up IEntityMeta by string id.
+     */
+    public IEntityMeta getEntityMeta(String cls) throws Exception;
 }

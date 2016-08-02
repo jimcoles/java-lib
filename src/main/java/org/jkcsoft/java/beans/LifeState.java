@@ -11,7 +11,7 @@
 package org.jkcsoft.java.beans;
 
 public class LifeState {
-  public static final String ST_NEW = "new";
-  public static final String ST_MOD = "modified";
-  public static final String ST_DEL = "deleted";
+    public static final String ST_NEW = "new";
+    public static final String ST_MOD = "modified";
+    public static final String ST_DEL = "deleted";
 }

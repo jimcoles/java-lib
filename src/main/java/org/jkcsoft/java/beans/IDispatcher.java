@@ -22,35 +22,34 @@ package org.jkcsoft.java.beans;
  * @author Jim Coles
  * @version 1.0
  */
-public interface IDispatcher
-{
-  /**
-   * Get bean property.
-   *
-   * @param name Bean property name.
-   * @return Bean property value as Object.
-   */
-  public Object get(Object bean, String name) throws Exception;
+public interface IDispatcher {
+    /**
+     * Get bean property.
+     *
+     * @param name Bean property name.
+     * @return Bean property value as Object.
+     */
+    public Object get(Object bean, String name) throws Exception;
 
-  /**
-   * Set bean property via reflection API.
-   *
-   * @param name   Bean property name.
-   * @param value  Bean property value.
-   */
-  public Object set(Object bean, String name, Object value) throws Exception;
+    /**
+     * Set bean property via reflection API.
+     *
+     * @param name  Bean property name.
+     * @param value Bean property value.
+     */
+    public Object set(Object bean, String name, Object value) throws Exception;
 
-  /**
-   * Invoke named method on target bean.
-   *
-   * @param name       Method name.
-   * @param types      Parameter types.
-   * @param parameters List of parameters passed to method.
-   *
-   * @return Return value from method (may be null).
-   *
-   * @throws Throwable When any exception occurs.
-   */
+    /**
+     * Invoke named method on target bean.
+     *
+     * @param name       Method name.
+     * @param types      Parameter types.
+     * @param parameters List of parameters passed to method.
+     *
+     * @return Return value from method (may be null).
+     *
+     * @throws Throwable When any exception occurs.
+     */
 //  public Object invoke(Object bean, String name, Class[] types, Object[] parameters)
 //       throws Exception;
 }

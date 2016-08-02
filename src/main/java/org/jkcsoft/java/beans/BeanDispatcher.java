@@ -34,111 +34,108 @@ import java.util.Map;
  * A good place to store the helper is as a static
  * private member of the bean class itself.  There is some overhead in creating
  * a BeanDispatcher so do not create one every time you need to make a call.
- *
+ * <p>
  * Source: This is a variation of RoseBeanProxy by Thornton Rose and also
- *         "Java 2 performance and idiom guide" [larman,guthrie] ch 6.4.
+ * "Java 2 performance and idiom guide" [larman,guthrie] ch 6.4.
  *
  * @author Jim Coles
  * @version 1.0
  */
-public class BeanDispatcher implements IDispatcher
-{
-  //---------------------------------------------------------------------------
-  // Private instance vars
-  //---------------------------------------------------------------------------
-  private Class  _beanClass;
-  private Map    _propertyDescriptorsByName = new HashMap();
+public class BeanDispatcher implements IDispatcher {
+    //---------------------------------------------------------------------------
+    // Private instance vars
+    //---------------------------------------------------------------------------
+    private Class _beanClass;
+    private Map _propertyDescriptorsByName = new HashMap();
 
-  //---------------------------------------------------------------------------
-  // Constructor(s)
-  //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    // Constructor(s)
+    //---------------------------------------------------------------------------
 
-  /**
-   * Constructs a dispatcher for the given class.
-   *
-   * @param theBeanClass The target bean class.
-   * @throws IntrospectionException if the specified class is not a valid
-   * JavaBean.
-   */
-  public BeanDispatcher(Class theBeanClass)
-    throws IntrospectionException
-  {
-    BeanInfo             bi;
-    PropertyDescriptor[] pds;
-    String               name;
+    /**
+     * Constructs a dispatcher for the given class.
+     *
+     * @param theBeanClass The target bean class.
+     * @throws IntrospectionException if the specified class is not a valid
+     *                                JavaBean.
+     */
+    public BeanDispatcher(Class theBeanClass)
+            throws IntrospectionException {
+        BeanInfo bi;
+        PropertyDescriptor[] pds;
+        String name;
 
-    // Save reference to bean class.
-    _beanClass = theBeanClass;
+        // Save reference to bean class.
+        _beanClass = theBeanClass;
 
-    // Build Map for bean property descriptors.
-    bi = Introspector.getBeanInfo(_beanClass);
-    pds = bi.getPropertyDescriptors();
-    for (int i = 0; i < pds.length; i ++) {
-      name = pds[i].getName();
-      _propertyDescriptorsByName.put(name, pds[i]);
-    }
-  }
-
-  //---------------------------------------------------------------------------
-  // Public instance methods
-  //---------------------------------------------------------------------------
-
-  /**
-   * Get bean property.
-   *
-   * @param name Bean property name.
-   * @return Bean property value as Object.
-   */
-  public Object get(Object bean, String name) throws Exception {
-    PropertyDescriptor pd;
-    Method             getter;
-
-    pd = (PropertyDescriptor) _propertyDescriptorsByName.get(name);
-
-    if (pd == null) {
-       throw new NoSuchFieldException("Unknown property: " + name);
+        // Build Map for bean property descriptors.
+        bi = Introspector.getBeanInfo(_beanClass);
+        pds = bi.getPropertyDescriptors();
+        for (int i = 0; i < pds.length; i++) {
+            name = pds[i].getName();
+            _propertyDescriptorsByName.put(name, pds[i]);
+        }
     }
 
-    getter = pd.getReadMethod();
-    if (getter == null) {
-       throw new NoSuchMethodException("No read method for: " + name);
+    //---------------------------------------------------------------------------
+    // Public instance methods
+    //---------------------------------------------------------------------------
+
+    /**
+     * Get bean property.
+     *
+     * @param name Bean property name.
+     * @return Bean property value as Object.
+     */
+    public Object get(Object bean, String name) throws Exception {
+        PropertyDescriptor pd;
+        Method getter;
+
+        pd = (PropertyDescriptor) _propertyDescriptorsByName.get(name);
+
+        if (pd == null) {
+            throw new NoSuchFieldException("Unknown property: " + name);
+        }
+
+        getter = pd.getReadMethod();
+        if (getter == null) {
+            throw new NoSuchMethodException("No read method for: " + name);
+        }
+
+        return getter.invoke(bean, new Object[]{});
     }
 
-    return getter.invoke(bean, new Object[] {});
-  }
+    /**
+     * Set bean property via reflection API.
+     *
+     * @param name  Bean property name.
+     * @param value Bean property value.
+     */
+    public Object set(Object bean, String name, Object value)
+            throws Exception {
+        PropertyDescriptor pd;
+        Method setter;
 
-  /**
-   * Set bean property via reflection API.
-   *
-   * @param name   Bean property name.
-   * @param value  Bean property value.
-   */
-  public Object set(Object bean, String name, Object value)
-    throws Exception
-  {
-    PropertyDescriptor pd;
-    Method             setter;
+        pd = (PropertyDescriptor) _propertyDescriptorsByName.get(name);
+        if (pd == null) throw new NoSuchFieldException("Unknown property: " + name);
 
-    pd = (PropertyDescriptor) _propertyDescriptorsByName.get(name);
-    if (pd == null) throw new NoSuchFieldException("Unknown property: " + name);
+        setter = pd.getWriteMethod();
+        if (setter == null) throw new NoSuchMethodException("No write method for: " + name);
 
-    setter = pd.getWriteMethod();
-    if (setter == null) throw new NoSuchMethodException("No write method for: " + name);
+        return setter.invoke(bean, new Object[]{value});
+    }
 
-    return setter.invoke(bean, new Object[] {value});
-  }
-
-  /**
-   * Invoke named method on target bean.
-   *
-   * @param name       Method name.
-   * @param types      Parameter types.
-   * @param parameters List of parameters passed to method.
-   *
-   * @return Return value from method (may be null).
-   *
-   * @throws Throwable When any exception occurs.
-   */
+    /**
+     * Invoke named method on target bean.
+     *
+     * @param name       Method name.
+     * @param types      Parameter types.
+     * @param parameters List of parameters passed to method.
+     *
+     * @return Return value from method (may be null).
+     *
+     * @throws Throwable When any exception occurs.
+     */
 //  public Object invoke(Object bean, String name, Class[] types, Object[] parameters)
 //       throws Exception {
 //    return _beanClass.getMethod(name, types).invoke(bean, parameters);

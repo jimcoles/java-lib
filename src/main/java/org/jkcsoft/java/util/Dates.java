@@ -46,47 +46,65 @@ public class Dates {
     public static final TimeZone TIME_ZONE_GMT = TimeZone.getTimeZone("GMT");
 
     public static final String DEFAULT_FORMAT = "M-dd-yyyy 'at' h:mm:ss a z";
-    /** 8-28-64 at 8:28:46 AM CST */
+    /**
+     * 8-28-64 at 8:28:46 AM CST
+     */
     public static final DateFormat FMTR_DEFAULT
             = new SimpleDateFormat(DEFAULT_FORMAT);
 
     public static final String ST_FMT_DATE_ONLY = "MMMMM d',' yyyy";
-    /** August 28, 1964 */
+    /**
+     * August 28, 1964
+     */
     public static final DateFormat FMTR_DATE_ONLY
             = new SimpleDateFormat(ST_FMT_DATE_ONLY);
 
     public static final String ST_FMT_TODAY_NARRATIVE = "EEEE MMMMM d',' yyyy";
-    /** Saturday August 28, 1964 */
+    /**
+     * Saturday August 28, 1964
+     */
     public static final DateFormat FMTR_TODAY_NARRATIVE
             = new SimpleDateFormat(ST_FMT_TODAY_NARRATIVE);
 
     public static final String ST_FMT_SHORT_TIMEZONE_ONLY = "zzz";
-    /** E.g., CST */
+    /**
+     * E.g., CST
+     */
     public static final DateFormat FMTR_SHORT_TIMEZONE_ONLY
             = new SimpleDateFormat(ST_FMT_SHORT_TIMEZONE_ONLY);
 
     public static final String ST_FMT_DEFAULT_SHORT_FORMAT = "M-dd-yyyy 'at' h:mm:ss a";
-    /** 8-28-64 at 8:28:46 AM */
+    /**
+     * 8-28-64 at 8:28:46 AM
+     */
     public static final DateFormat FMTR_DEFAULT_SHORT_FORMAT
             = new SimpleDateFormat(ST_FMT_DEFAULT_SHORT_FORMAT);
 
     public static final String ST_FMT_DETAIL_MS = "M-dd-yyyy 'at' h:mm:ss.S a";
-    /** 8-28-64 at 8:28:46.378 AM */
+    /**
+     * 8-28-64 at 8:28:46.378 AM
+     */
     public static final DateFormat FMTR_DETAIL_MS
             = new SimpleDateFormat(ST_FMT_DETAIL_MS);
 
     public static final String ST_FMT_DEFAULT_LONG_FORMAT = "M-dd-yyyy 'at' h:mm:ss a zzz";
-    /** 8-28-64 at 8:28:28 AM Easter Standard Time */
+    /**
+     * 8-28-64 at 8:28:28 AM Easter Standard Time
+     */
     public static final DateFormat FMTR_DEFAULT_LONG_FORMAT
             = new SimpleDateFormat(ST_FMT_DEFAULT_LONG_FORMAT);
 
     public static final String ST_FMT_TODAY_LONG_FORMAT = "'Today at' h:mm:ss a zzz";
-    /** Today at 8:28:46 AM CST */
+    /**
+     * Today at 8:28:46 AM CST
+     */
     public static final DateFormat FMTR_TODAY_LONG_FORMAT
             = new SimpleDateFormat(ST_FMT_TODAY_LONG_FORMAT);
 
     public static final String ST_TODAY_SHORT_FORMAT = "h:mm:ss a";
-    /** 8:28:46 AM */
+    /**
+     * 8:28:46 AM
+     */
     public static final DateFormat FMTR_TODAY_SHORT_FORMAT
             = new SimpleDateFormat(ST_TODAY_SHORT_FORMAT);
 
@@ -121,7 +139,7 @@ public class Dates {
 
 
     /**
-     *  Convert a string with of format mm-dd-yyyy to a java.lang.Date.getTime()
+     * Convert a string with of format mm-dd-yyyy to a java.lang.Date.getTime()
      */
     public static long toDateLong(String strDate, DateFormat formatter) {
         Date date = toDate(strDate, formatter);
@@ -136,7 +154,7 @@ public class Dates {
     }
 
     /**
-     *  Convert a string to a Date.
+     * Convert a string to a Date.
      */
     public static Date toDate(String strDate, DateFormat formatter) {
         Date date = null;

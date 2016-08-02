@@ -20,28 +20,33 @@ package org.jkcsoft.java.beans;
 
 import java.util.List;
 
-public interface IEntityBean extends IDispatch
-{
-  /** Supports persistence. Do we need a setter? */
-  public void setLifeState(String lifeState);
-  /** Supports persistence. */
-  public String getLifeState();
+public interface IEntityBean extends IDispatch {
+    /**
+     * Supports persistence. Do we need a setter?
+     */
+    public void setLifeState(String lifeState);
 
-  /**
-   * Asks the bean to validate itself.  Can be used by the Command layer or the
-   * JSP layer.
-   *
-   * @return A <code>java.util.List</code> of 1 or more Strings representing distinct
-   * object validation error messages suitable for display to the end-user.
-   * Null if the object is valid.
-   */
-  public List validate();
+    /**
+     * Supports persistence.
+     */
+    public String getLifeState();
 
-  public IEntityMeta getMetaData() throws Exception;
+    /**
+     * Asks the bean to validate itself.  Can be used by the Command layer or the
+     * JSP layer.
+     *
+     * @return A <code>java.util.List</code> of 1 or more Strings representing distinct
+     * object validation error messages suitable for display to the end-user.
+     * Null if the object is valid.
+     */
+    public List validate();
 
-  // <IDispatch>
-  public Object get(String prop) throws Exception;
-  public void set(String prop, Object value) throws Exception;
-  // </IDispatch>
+    public IEntityMeta getMetaData() throws Exception;
+
+    // <IDispatch>
+    public Object get(String prop) throws Exception;
+
+    public void set(String prop, Object value) throws Exception;
+    // </IDispatch>
 
 }

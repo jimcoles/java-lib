@@ -11,7 +11,6 @@
 package org.jkcsoft.java.beans;
 
 /**
- *
  * @author Jim Coles
  * @version 1.0
  */
@@ -19,33 +18,31 @@ package org.jkcsoft.java.beans;
 import java.sql.Types;
 
 public class DataTypes {
-  public static Object java2Jdbc(IPropMeta pm, Object javaDataTypeValue)
-    throws Exception
-  {
-    Object retJDBCDataTypeValue = javaDataTypeValue;
+    public static Object java2Jdbc(IPropMeta pm, Object javaDataTypeValue)
+            throws Exception {
+        Object retJDBCDataTypeValue = javaDataTypeValue;
 
-    if(pm.getColType() == Types.DATE) {
-      if(javaDataTypeValue instanceof java.util.Date) {
-        java.util.Date jud = (java.util.Date) javaDataTypeValue;
-        retJDBCDataTypeValue = new java.sql.Date(jud.getTime());
-      }
+        if (pm.getColType() == Types.DATE) {
+            if (javaDataTypeValue instanceof java.util.Date) {
+                java.util.Date jud = (java.util.Date) javaDataTypeValue;
+                retJDBCDataTypeValue = new java.sql.Date(jud.getTime());
+            }
+        }
+
+        return retJDBCDataTypeValue;
     }
 
-    return retJDBCDataTypeValue;
-  }
+    public static Object jdbc2Java(IPropMeta pm, Object jdbcDataTypeValue)
+            throws Exception {
+        Object retJavaDataTypeValue = jdbcDataTypeValue;
 
-  public static Object jdbc2Java(IPropMeta pm, Object jdbcDataTypeValue)
-    throws Exception
-  {
-    Object retJavaDataTypeValue = jdbcDataTypeValue;
+        if (pm.getColType() == Types.DATE) {
+            if (jdbcDataTypeValue instanceof java.sql.Date) {
+                java.sql.Date jsd = (java.sql.Date) jdbcDataTypeValue;
+                retJavaDataTypeValue = new java.util.Date(jsd.getTime());
+            }
+        }
 
-    if(pm.getColType() == Types.DATE) {
-      if(jdbcDataTypeValue instanceof java.sql.Date) {
-        java.sql.Date jsd = (java.sql.Date) jdbcDataTypeValue;
-        retJavaDataTypeValue = new java.util.Date(jsd.getTime());
-      }
+        return retJavaDataTypeValue;
     }
-
-    return retJavaDataTypeValue;
-  }
 }

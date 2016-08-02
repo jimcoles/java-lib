@@ -16,41 +16,44 @@ package org.jkcsoft.java.beans;
  * @author Jim Coles
  * @version 1.0
  */
-public class EntityMeta implements IEntityMeta
-{
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  private String _progId = null;
-  private String _tableName = null;
+public class EntityMeta implements IEntityMeta {
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    private String _progId = null;
+    private String _tableName = null;
 
-  private PropertyList _proplist = new PropertyList();
-  private PropertyList _pklist = new PropertyList();
+    private PropertyList _proplist = new PropertyList();
+    private PropertyList _pklist = new PropertyList();
 
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  public EntityMeta(String progId, String tableName)
-  {
-    _progId = progId;
-    _tableName = tableName;
-  }
-
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-  public String getProgId() { return _progId; }
-  public String getTableName() { return _tableName; }
-
-  public PropertyList getPropMetaList() {
-    return _proplist;
-  }
-  public PropertyList getPKList() {
-    return _pklist;
-  }
-
-  public void addProp(IPropMeta pm)
-  {
-    _proplist.add(pm);
-    if (pm.isPK()) {
-      _pklist.add(pm);
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    public EntityMeta(String progId, String tableName) {
+        _progId = progId;
+        _tableName = tableName;
     }
-  }
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    public String getProgId() {
+        return _progId;
+    }
+
+    public String getTableName() {
+        return _tableName;
+    }
+
+    public PropertyList getPropMetaList() {
+        return _proplist;
+    }
+
+    public PropertyList getPKList() {
+        return _pklist;
+    }
+
+    public void addProp(IPropMeta pm) {
+        _proplist.add(pm);
+        if (pm.isPK()) {
+            _pklist.add(pm);
+        }
+    }
 }
