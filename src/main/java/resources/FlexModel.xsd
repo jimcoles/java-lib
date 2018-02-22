@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
+  ~
+  ~ Licensed under the following license agreement:
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Also see the LICENSE file in the repository root directory.
+  -->
+
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
     <!--
@@ -174,6 +184,7 @@
                 Description: Maps to java class of the same name (Attribute) and
                 RDB table BC_ATTRIBUTE
             </xsd:documentation>
+            <xsd:appinfo></xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all minOccurs="0" maxOccurs="1">

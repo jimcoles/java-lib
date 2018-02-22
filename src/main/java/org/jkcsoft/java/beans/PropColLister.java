@@ -1,19 +1,19 @@
 /*
- * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2016. through present.
+ * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
  *
  * Licensed under the following license agreement:
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Also see the LICENSE file in the repository root directory.
  */
 
 package org.jkcsoft.java.beans;
 
-import org.jkcsoft.java.util.ILister;
+import org.jkcsoft.java.util.Lister;
 
-public class PropColLister implements ILister {
-    public static ILister INSTANCE = new PropColLister();
+public class PropColLister implements Lister {
+    public static Lister INSTANCE = new PropColLister();
 
     private PropColLister() {
     }

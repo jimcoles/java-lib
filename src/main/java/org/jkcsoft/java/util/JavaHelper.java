@@ -1,9 +1,9 @@
 /*
- * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2016. through present.
+ * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
  *
  * Licensed under the following license agreement:
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Also see the LICENSE file in the repository root directory.
  */
@@ -132,6 +132,12 @@ public class JavaHelper {
         java.io.PrintWriter pw = new java.io.PrintWriter(sw);
         th.printStackTrace(pw);
         return sw.toString();
+    }
+
+    public static StackTraceElement getCallerStackInfo() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement stackTraceElement = stackTrace[2];
+        return stackTraceElement;
     }
 
     /**

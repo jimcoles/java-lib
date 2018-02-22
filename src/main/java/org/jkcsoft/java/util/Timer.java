@@ -1,12 +1,14 @@
-package org.jkcsoft.java.util;
-
 /*
- * Title:
- * Description: Designed to track events () and then allow client object to
- * report on time deltas for the various events.
- * Copyright:    Copyright (c) 2001
- * Company:
+ * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
+ *
+ * Licensed under the following license agreement:
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Also see the LICENSE file in the repository root directory.
  */
+
+package org.jkcsoft.java.util;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

@@ -1,9 +1,9 @@
 /*
- * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2016. through present.
+ * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
  *
  * Licensed under the following license agreement:
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Also see the LICENSE file in the repository root directory.
  */
@@ -126,9 +126,9 @@ public class Strings {
         return retVal;
     }
 
-    public static String buildCommaDelList(Collection items, ILister lister) {
+    public static String buildCommaDelList(Collection items, Lister lister) {
         if (items != null)
-            return _buildCommaDelList(items.iterator(), items.size(), lister);
+            return buildDelList(items, lister, COMMA + " ");
         else
             return "";
     }
@@ -139,39 +139,33 @@ public class Strings {
      */
     public static String buildCommaDelList(Collection items) {
         if (items != null)
-            return _buildCommaDelList(
-                    items.iterator(),
-                    items.size(),
-                    new ILister() {
-
-                        public String getListString(Object obj) {
-                            return obj != null ? obj.toString() : obj.toString();
-                        }
-                    });
+            return buildDelList(items, new ToStringLister(), COMMA + " ");
         else
             return "";
     }
 
-    private static String _buildCommaDelList(
-            Iterator items,
-            int size,
-            ILister lister) {
-        StringBuilder retVal = new StringBuilder();
+    public static String buildNewlineList(Collection items) {
+        if (items != null)
+            return buildDelList(items, new ToStringLister(), JavaHelper.EOL);
+        else
+            return "";
+    }
+
+    private static String buildDelList(Collection items, Lister lister, String delimiter) {
+        StringBuilder sb = new StringBuilder();
         int count = 0;
-        Object obj = null;
         if (items != null) {
-            while (items.hasNext()) {
-                obj = items.next();
+            for (Object obj : items) {
                 count++;
                 if (obj != null) {
-                    retVal.append(lister.getListString(obj));
-                    if (count < size) {
-                        retVal.append(COMMA + " ");
+                    sb.append(lister.getListString(obj));
+                    if (count < items.size()) {
+                        sb.append(delimiter);
                     }
                 }
             }
         }
-        return retVal.toString();
+        return sb.toString();
     }
 
     /**
@@ -673,5 +667,11 @@ public class Strings {
 
     public static void appendLine(StringBuilder sbMsg, String s) {
         sbMsg.append(s + JavaHelper.EOL);
+    }
+
+    private static class ToStringLister implements Lister {
+        public String getListString(Object obj) {
+            return "" + obj;
+        }
     }
 }
