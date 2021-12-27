@@ -1,2 +1,2 @@
 # java-core
-Helpers around java runtime lib.
+Helpers around core Java libraries and packages.

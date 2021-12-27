@@ -1,7 +1,6 @@
 
 .idea/
+/*.iml
 archive/
 backup/
-java-core.iml
 target/
-/src/main/ref/
