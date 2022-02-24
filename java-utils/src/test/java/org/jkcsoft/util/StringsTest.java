@@ -11,6 +11,7 @@
 package org.jkcsoft.util;
 
 import org.jkcsoft.java.util.JavaHelper;
+import org.jkcsoft.java.util.Lister;
 import org.jkcsoft.java.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,12 +51,13 @@ public class StringsTest {
 
     @Test
     public void testMultStrings() {
-        testMultString("X", 5);
-        testMultString("X", 3);
+        testMultString("X", 5, null);
+        testMultString("X", 3, null);
+        testMultString("X", 5, "-");
     }
 
-    private void testMultString(String baseStr, int num) {
-        log("test: expect " + num + " " + baseStr + " => " + Strings.multiplyString(baseStr, num));
+    private void testMultString(String baseStr, int num, String multiPrefix) {
+        log("test: expect " + num + " " + baseStr + " => " + Strings.multiplyString(baseStr, num, multiPrefix));
     }
 
     @Test
@@ -64,6 +66,26 @@ public class StringsTest {
         String replaced = Strings.replace(template, "zero", "one", "two");
         Assert.assertEquals("expect string replacement", "place 0 zero, place 1 one, place two", replaced);
         log("replaced string: " + replaced);
+    }
+    
+    public static class Widget {
+        int id;
+        String name;
+    
+        public Widget(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+    }
+    
+    @Test
+    public void testLister() {
+        List<Widget> widgets = List.of(new Widget(1, "fred"), new Widget(2, "dingo"));
+        String widgetList = Strings.buildDelList(
+            widgets,
+            widget -> "[" + widget.id + "|" + widget.name + "]",
+            ",");
+        log("widget list: " + widgetList);
     }
 
     private void log(String msg) {

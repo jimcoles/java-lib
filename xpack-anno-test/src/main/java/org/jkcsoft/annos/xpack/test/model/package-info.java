@@ -11,7 +11,7 @@
 /**
  * @author Jim Coles
  */
-@XPack
+@XPack (handler = "org.jkcsoft.annos.xpack.test.TestXpackHandler")
 package org.jkcsoft.annos.xpack.test.model;
 
 import org.jkcsoft.annos.xpack.XPack;

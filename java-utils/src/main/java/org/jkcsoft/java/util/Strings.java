@@ -121,39 +121,39 @@ public class Strings {
         return retVal;
     }
 
-    public static String buildCommaDelList(Collection items, Lister lister) {
+    public static <T> String buildCommaDelList(Collection<T> items, Lister<T> lister) {
         if (items != null)
             return buildDelList(items, lister, COMMA + " ");
         else
             return "";
     }
-
+    
     /**
      * buildCommaDelList() builds a comma delimited list
      * from an Vector of Objects.
      */
-    public static String buildCommaDelList(Collection items) {
+    public static <T> String buildCommaDelList(Collection<T> items) {
         if (items != null)
-            return buildDelList(items, new ToStringLister(), COMMA + " ");
+            return buildDelList(items, new ToStringLister<T>(), COMMA + " ");
         else
             return "";
     }
 
-    public static String buildNewlineList(Collection items) {
+    public static <T> String buildNewlineList(Collection<T> items) {
         if (items != null)
-            return buildDelList(items, new ToStringLister(), JavaHelper.EOL);
+            return buildDelList(items, new ToStringLister<T>(), JavaHelper.EOL);
         else
             return "";
     }
 
-    public static String buildDelList(Collection items, Lister lister, String delimiter) {
+    public static <T> String buildDelList(Collection<T> items, Lister<T> lister, String delimiter) {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         if (items != null) {
-            for (Object obj : items) {
+            for (T item : items) {
                 count++;
-                if (obj != null) {
-                    sb.append(lister.getListString(obj));
+                if (item != null) {
+                    sb.append(lister.getListString(item));
                     if (count < items.size()) {
                         sb.append(delimiter);
                     }
@@ -181,7 +181,8 @@ public class Strings {
     public static String rest(String input, String sub, boolean first) {
         String retString = null;
         if (input != null) {
-            int lastIdx = (first ? input.lastIndexOf(sub) : input.lastIndexOf(sub));
+            int lastIdx = (
+                first ? input.lastIndexOf(sub) : input.lastIndexOf(sub));
             if (lastIdx != -1)
                 retString = input.substring(lastIdx + sub.length());
             else
@@ -409,25 +410,22 @@ public class Strings {
 
 //    private static Map<String, String> multStringMap = new HashMap<>();
     /**
-     *
+     * @param baseStr the string we want multiple copies of
+     * @param num the number of copies of baseStr
+     * @param multiPrefix optional prefix of repeating cycle after the first
      */
-    public static String multiplyString(String baseStr, int num, String multStr) {
+    public static String multiplyString(String baseStr, int num, String multiPrefix) {
         String computedString = "";
-//        String key = baseStr + "_" + num + "_" + multStr;
-//        String computedString = multStringMap.get(key);
-//        if (computedString == null) {
-            StringBuilder buf = new StringBuilder(baseStr.length() * num);
-            for (int i = 0; i < num; i++) {
-                if (i > 0)
-                    buf.append(multStr != null ? multStr : "");
-                buf.append(baseStr);
-            }
-            computedString = buf.toString();
-//            multStringMap.put(key, computedString);
-//        }
+        StringBuilder buf = new StringBuilder(baseStr.length() * num);
+        for (int idx = 0; idx < num; idx++) {
+            if (multiPrefix != null && idx > 0)
+                buf.append(multiPrefix);
+            buf.append(baseStr);
+        }
+        computedString = buf.toString();
         return computedString;
     }
-
+    
     /**
      * Return toString() if its non-null, non-empty; otherwise returns specified
      * default value <code>def</code>.
@@ -682,8 +680,8 @@ public class Strings {
 
     public static final Lister TO_STRING_LISTER = new ToStringLister();
 
-    public static class ToStringLister implements Lister {
-        public String getListString(Object obj) {
+    public static class ToStringLister<T> implements Lister<T> {
+        public String getListString(T obj) {
             return "" + obj;
         }
     }

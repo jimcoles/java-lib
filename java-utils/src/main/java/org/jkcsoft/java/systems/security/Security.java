@@ -9,7 +9,7 @@
  */
 package org.jkcsoft.java.systems.security;
 
-import java.security.acl.Permission;
+import java.security.Permission;
 
 /**
  * This class can be reprogrammed depending on what underlying system is

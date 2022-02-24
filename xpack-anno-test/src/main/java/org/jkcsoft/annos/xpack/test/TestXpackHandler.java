@@ -10,16 +10,23 @@
 
 package org.jkcsoft.annos.xpack.test;
 
+import org.jkcsoft.annos.xpack.XPackHandler;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * @author Jim Coles
  */
-public class TestPackageAnno {
+public class TestXpackHandler implements XPackHandler {
 
     @Test
     public void testPackageAnno() {
     
     }
     
+    @Override
+    public void handle(List<Class> packageClasses) {
+    
+    }
 }

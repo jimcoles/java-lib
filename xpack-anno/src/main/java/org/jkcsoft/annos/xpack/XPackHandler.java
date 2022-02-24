@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2018 through present.
+ * Copyright (c) Jim Coles (jameskcoles@gmail.com) 2021 through present.
  *
  * Licensed under the following license agreement:
  *
@@ -10,9 +10,13 @@
 
 package org.jkcsoft.annos.xpack;
 
+import java.util.List;
+
 /**
  * @author Jim Coles
  */
-public class Dimpl {
+public interface XPackHandler {
 
+    void handle(List<Class> packageClasses);
+    
 }

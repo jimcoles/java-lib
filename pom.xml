@@ -23,18 +23,17 @@
 
     <groupId>org.jkcsoft.javalib</groupId>
     <artifactId>java-lib</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- Where we at. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <java-source.level>8</java-source.level>
-        <java-compiler.target-level>8</java-compiler.target-level>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <java-source.level>12</java-source.level>
+        <java-compiler.target-level>17</java-compiler.target-level>
         <!-- Common component version control -->
         <junit.version>4.12</junit.version>
-
     </properties>
 
     <build>

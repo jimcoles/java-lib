@@ -16,11 +16,7 @@ import org.jkcsoft.java.util.Strings;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import javax.lang.model.element.*;
 import java.util.List;
 import java.util.Set;
 
@@ -38,16 +34,27 @@ public class XPackProcessor extends AbstractProcessor {
     public XPackProcessor() {
 
     }
-
+    
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+    }
+    
+    @Override
+    public Iterable<? extends Completion> getCompletions(Element element, AnnotationMirror annotation,
+                                                         ExecutableElement member, String userText)
+    {
+        return super.getCompletions(element, annotation, member, userText);
+    }
+    
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         log.info(Strings.replace("process called with {0} annotations; env isover = {1}",
                                  annotations.size(),
                                  roundEnv.processingOver())
                 );
-        if (roundEnv.processingOver())
-        for (TypeElement anno : annotations) {
-            Set<? extends Element> taggedElems = roundEnv.getElementsAnnotatedWith(anno);
+        for (TypeElement annotatedElement : annotations) {
+            Set<? extends Element> taggedElems = roundEnv.getElementsAnnotatedWith(annotatedElement);
             log.info("tagged: " + JavaHelper.EOL + Strings.buildNewlineList(taggedElems));
             for (Element taggedElem : taggedElems) {
                 PackageElement packageElem = (PackageElement) taggedElem;
@@ -55,6 +62,24 @@ public class XPackProcessor extends AbstractProcessor {
                 packageElem.getQualifiedName();
                 List<? extends Element> packageChildren = packageElem.getEnclosedElements();
                 log.info("pack encl: " + JavaHelper.EOL + Strings.buildNewlineList(packageChildren));
+            }
+            XPack xpack = null;
+            if (xpack != null && !Strings.isEmpty(xpack.handler())) {
+                try {
+                    Class<XPackHandler> handlerClass =
+                        (Class<XPackHandler>) Class.forName(xpack.handler());
+                    XPackHandler handler = handlerClass.newInstance();
+                    handler.handle(null);
+                }
+                catch (ClassNotFoundException e) {
+                    log.error("could not instantiate xpack handler []", e);
+                }
+                catch (InstantiationException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return true;

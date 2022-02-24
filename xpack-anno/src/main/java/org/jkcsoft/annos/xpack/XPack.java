@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Uses primarily to generate a list of classes in a given source package.
+ * Used primarily to generate a list of classes in a given source package.
  * Useful since Java reflection API does not provide this.
  *
  * @author Jim Coles
@@ -24,5 +24,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.PACKAGE)
 @Retention(RetentionPolicy.CLASS)
 public @interface XPack {
-
+    /** The handler takes the list of package classes. */
+    String handler() default "";
 }
