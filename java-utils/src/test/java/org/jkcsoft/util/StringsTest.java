@@ -11,7 +11,6 @@
 package org.jkcsoft.util;
 
 import org.jkcsoft.java.util.JavaHelper;
-import org.jkcsoft.java.util.Lister;
 import org.jkcsoft.java.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
@@ -59,13 +58,21 @@ public class StringsTest {
     private void testMultString(String baseStr, int num, String multiPrefix) {
         log("test: expect " + num + " " + baseStr + " => " + Strings.multiplyString(baseStr, num, multiPrefix));
     }
-
+    
     @Test
-    public void testStringsReplace() {
+    public void testStringFormatter() {
         String template = "place 0 {0}, place 1 {1}, place {2}";
-        String replaced = Strings.replace(template, "zero", "one", "two");
+        String replaced = Strings.fmt(template, "zero", "one", "two");
         Assert.assertEquals("expect string replacement", "place 0 zero, place 1 one, place two", replaced);
         log("replaced string: " + replaced);
+    }
+    
+    @Test
+    public void testFormatterMemoization() {
+        String template = "place 0 {0}, place 1 {1}, place {2}";
+        String fmt1 = Strings.fmt(template, "zero", "one", "two");
+        String fmt2 = Strings.fmt(template, "zero", "one", "two");
+        log("replaced string: " + fmt1);
     }
     
     public static class Widget {

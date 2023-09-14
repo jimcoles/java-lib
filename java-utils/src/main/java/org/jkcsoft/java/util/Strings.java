@@ -10,9 +10,15 @@
 
 package org.jkcsoft.java.util;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Collection of String utilities.
@@ -21,19 +27,36 @@ import java.util.*;
  * @version 1.0
  */
 public class Strings {
+    
+    private static final Logger log = LoggerFactory.getLogger(Strings.class);
+    
+    public static final Lister TO_STRING_LISTER = new ToStringLister();
     private static final String COMMA = ",";
-
+    
     //----------------------------------------------------------------------------
     // Public Static methods
     //----------------------------------------------------------------------------
-
+    private static final Cache<String, MessageFormat> memoizationCache =
+        CacheBuilder.newBuilder()
+                    .maximumSize(100) // Set the maximum cache size
+                    .build();
+    
     /**
      * Does string substitution of substrings with args.
      */
-    public static String replace(String template, Object ... args) {
-        return MessageFormat.format(template, args);
+    public static String fmt(String template, Object... args) {
+        MessageFormat format = null;
+        try {
+            // Get the result from the cache or compute it if not present
+            format = memoizationCache.get(template, () -> new MessageFormat(template));
+        }
+        catch (ExecutionException e) {
+            log.error("error computing string formatter for ["+template+"]" , e);
+            format = new MessageFormat(template);
+        }
+        return format.format(args);
     }
-
+    
     public static String replaceAll(String in, String find, String replace) {
         String retVal = in;
         if (in != null && find != null) {
@@ -55,7 +78,7 @@ public class Strings {
         }
         return retVal;
     }
-
+    
     /**
      * Returns true if the email string contains an at sign ("@") and
      * at least one dot ("."), i.e. "hans@gefionsoftware.com" is accepted
@@ -76,7 +99,7 @@ public class Strings {
         }
         return isValid;
     }
-
+    
     /**
      * Returns true if the specified string matches a string in the set
      * of provided valid strings, ignoring case if specified.
@@ -104,7 +127,7 @@ public class Strings {
             return (java.util.Arrays.binarySearch(validStrings, value) >= 0);
         }
     }
-
+    
     public static boolean contains(String in, char[] chars) {
         Arrays.sort(chars);
         boolean retVal = false;
@@ -120,7 +143,7 @@ public class Strings {
         }
         return retVal;
     }
-
+    
     public static <T> String buildCommaDelList(Collection<T> items, Lister<T> lister) {
         if (items != null)
             return buildDelList(items, lister, COMMA + " ");
@@ -138,14 +161,15 @@ public class Strings {
         else
             return "";
     }
-
+    
     public static <T> String buildNewlineList(Collection<T> items) {
         if (items != null)
             return buildDelList(items, new ToStringLister<T>(), JavaHelper.EOL);
         else
             return "";
     }
-
+    
+    /** The most general form. */
     public static <T> String buildDelList(Collection<T> items, Lister<T> lister, String delimiter) {
         StringBuilder sb = new StringBuilder();
         int count = 0;
@@ -162,14 +186,14 @@ public class Strings {
         }
         return sb.toString();
     }
-
+    
     /**
      * Returns everything to the right of the first occurence of <code>sub</code>.
      */
     public static String restAfterFirst(String input, String sub) {
         return rest(input, sub, true);
     }
-
+    
     /**
      * Returns everything to the right of the last occurence of <code>sub</code>.
      * Good for getting Class name from fully-qualified name.
@@ -177,7 +201,7 @@ public class Strings {
     public static String restAfterLast(String input, String sub) {
         return rest(input, sub, false);
     }
-
+    
     public static String rest(String input, String sub, boolean first) {
         String retString = null;
         if (input != null) {
@@ -190,7 +214,7 @@ public class Strings {
         }
         return retString;
     }
-
+    
     /**
      * takes a comma delimited list of longs (String) and returns the last long
      */
@@ -199,7 +223,7 @@ public class Strings {
     {
         return getLastLong(strIDs, ',');
     } //end getLastLong
-
+    
     public static long getLastLong(String strIDs, char delim)
         throws NumberFormatException
     {
@@ -218,7 +242,7 @@ public class Strings {
             lngID = Long.parseLong(strIDs);
         return lngID;
     } //end getLastLong
-
+    
     /**
      * same thing only ints
      */
@@ -227,14 +251,14 @@ public class Strings {
     {
         return stringListToIntArray(inStr, ",");
     }
-
+    
     public static int[] stringListToIntArray(String inStr, String delim)
         throws NumberFormatException
     {
-
+        
         if (inStr == null)
             return null;
-
+        
         StringTokenizer st = new StringTokenizer(inStr, delim);
         int[] ret = new int[st.countTokens()];
         int idx = 0;
@@ -243,14 +267,14 @@ public class Strings {
         }
         return ret;
     }
-
+    
     public static int[] stringArrayToIntArray(String[] inStr)
         throws NumberFormatException
     {
-
+        
         if (inStr == null)
             return null;
-
+        
         int[] ret = new int[inStr.length];
         for (int idxStr = 0; idxStr < inStr.length; idxStr++) {
             String str = inStr[idxStr];
@@ -258,7 +282,7 @@ public class Strings {
         }
         return ret;
     }
-
+    
     /**
      * takes a comma separated list of longs and returns an array of longs
      * this method at this point assumes correctly formatted input
@@ -268,7 +292,7 @@ public class Strings {
     {
         return stringListToLongArray(inStr, ",");
     }
-
+    
     public static long[] stringListToLongArray(String inStr, String delim)
         throws NumberFormatException
     {
@@ -280,13 +304,13 @@ public class Strings {
         }
         return ret;
     }
-
+    
     public static String[] stringListToStringArray(String inStr)
         throws NumberFormatException
     {
         return stringListToStringArray(inStr, ",");
     }
-
+    
     public static String[] stringListToStringArray(String inStr, String delim)
         throws NumberFormatException
     {
@@ -299,42 +323,44 @@ public class Strings {
         }
         return ret;
     }
-
+    
     static public String replaceDashByUnderScore(String s) {
         return s.replace('-', '_');
     }
-
+    
     static public boolean isValidIntOrLong(String s) {
         boolean ret = false;
         try {
             Long.parseLong(s); // if it parses w/o exception, it's valid.
             ret = true;
-        } catch (NumberFormatException ignore) {
+        }
+        catch (NumberFormatException ignore) {
         }
         return ret;
     }
-
+    
     static public boolean isFloat(String s) {
         boolean ret = false;
         try {
             Float.parseFloat(s); // if it parses w/o exception, is a float.
             ret = true;
-        } catch (NumberFormatException ignore) {
+        }
+        catch (NumberFormatException ignore) {
         }
         return ret;
     }
-
+    
     static public boolean isNumeric(String s) {
         return isFloat(s);
     }
-
+    
     public static boolean isPrintable(String s) {
         if (s == null || s.equals("") || s.equals("null") || s.equals(""))
             return false;
         else
             return true;
     }
-
+    
     /**
      * fixDoubleQuotes takes a String and if it has a double quote in it, inserts a \
      */
@@ -347,7 +373,7 @@ public class Strings {
                 jdtSB.insert(i, '\\');
         return jdtSB.toString();
     } //end fixDoubleQuotes
-
+    
     /**
      * Trims with a null check.
      */
@@ -356,7 +382,7 @@ public class Strings {
             return null;
         return s.trim();
     }
-
+    
     /**
      * Returns string limited to specified length
      */
@@ -373,7 +399,7 @@ public class Strings {
         }
         return retString;
     }
-
+    
     /**
      * takes a comma separated list of longs and returns a list of Longs
      * this method at this point assumes correctly formatted input
@@ -388,30 +414,32 @@ public class Strings {
         }
         return ret;
     }
-
+    
     /**
      *
      */
     public static boolean isInt(String numStr) {
         try {
             Integer.parseInt(numStr);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return false;
         }
         return true;
     }
 
+//    private static Map<String, String> multStringMap = new HashMap<>();
+    
     /**
      *
      */
     public static String multiplyString(String baseStr, int num) {
         return multiplyString(baseStr, num, null);
     }
-
-//    private static Map<String, String> multStringMap = new HashMap<>();
+    
     /**
-     * @param baseStr the string we want multiple copies of
-     * @param num the number of copies of baseStr
+     * @param baseStr     the string we want multiple copies of
+     * @param num         the number of copies of baseStr
      * @param multiPrefix optional prefix of repeating cycle after the first
      */
     public static String multiplyString(String baseStr, int num, String multiPrefix) {
@@ -440,7 +468,7 @@ public class Strings {
             return def;
         return obj.toString();
     }
-
+    
     /**
      * Returns false if the String provided is equals to null, has a
      * length equal to 0
@@ -448,11 +476,11 @@ public class Strings {
     public static boolean isEmpty(String s) {
         return s == null || s.trim().length() == 0;
     }
-
+    
     public static boolean isNotEmpty(String s) {
         return !isEmpty(s);
     }
-
+    
     /**
      * Returns boolean if any of the IP octets is not valid and does not match the number
      * of octets provided
@@ -464,45 +492,46 @@ public class Strings {
         if (octetCount < 1 || octetCount > 4) {
             throw new IllegalArgumentException("The octet count must be between 1 and 4");
         }
-
+        
         boolean valid = true;
-
+        
         int countIpOctets = 0;
         StringBuilder sb = new StringBuilder(ip);
         //If the ip is subnet and does not end with a ".", then add one.
         if ((ip.lastIndexOf(".") + 1 != ip.length())) {
             sb.append(".");
         }
-
+        
         int index = 0;
         int indexZero = 0;
         while ((index = sb.indexOf(".")) != -1) {
-
+            
             String octet = sb.substring(indexZero, index);
-
+            
             try {
                 if (Integer.parseInt(octet) > 255
                     || Integer.parseInt(octet) < 0) {
                     valid = false;
                     return valid;
                 }
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 valid = false;
                 return valid;
             }
-
+            
             sb.delete(indexZero, index + 1); //delete octet and it's '.'
-
+            
             countIpOctets++;
         }
         if (countIpOctets != octetCount) {
             valid = false;
             return valid;
         }
-
+        
         return valid;
     }
-
+    
     /**
      * Gets String between two delimiting Strings
      */
@@ -513,13 +542,13 @@ public class Strings {
     {
         if (str == null || startIndexString == null)
             return null;
-
+        
         int beginIndex = -1;
         if ((beginIndex = str.indexOf(startIndexString)) == -1) {
             return "";
         }
         beginIndex += startIndexString.length();
-
+        
         int endIndex =
             (endIndexString != null)
                 ? str.indexOf(endIndexString, beginIndex)
@@ -527,43 +556,45 @@ public class Strings {
         if (endIndex == -1) {
             endIndex = str.length();
         }
-
+        
         String cutStr = null;
         try {
             cutStr = str.substring(beginIndex, endIndex);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 //            LogUtil.LOG_WEB.error(e);
             cutStr = "?";
         }
-
+        
         return cutStr;
     }
-
+    
     public static String convert8859ToUtf8(String in) {
         if (in == null)
             return null;
-
+        
         String out = convertEnc(in, "ISO-8859-1", "UTF-8");
         return out;
     }
-
+    
     public static String convertEnc(String in, String fromEnc, String toEnc) {
         if (in == null)
             return null;
-
+        
         String out = null;
         try {
             out = new String(in.getBytes(fromEnc), toEnc);
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             out = e.getMessage() + "??";
         }
         return out;
     }
-
+    
     public static String escapeUnicodeString(String str, boolean escapeAscii) {
         if (str == null)
             return null;
-
+        
         String ostr = new String();
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
@@ -581,7 +612,7 @@ public class Strings {
         }
         return (ostr);
     }
-
+    
     /**
      * For all occurences of the keywords in baseString, set the prefix and suffix before and after the keyword.
      *
@@ -600,16 +631,16 @@ public class Strings {
         if (keywords == null || keywords.length < 1) {
             return baseString;
         }
-
+        
         String returnSring = baseString;
         for (int i = 0, l = keywords.length; i < l; i++) {
             returnSring =
                 markupSubstring(returnSring, keywords[i], prefix, suffix);
         }
-
+        
         return returnSring;
     }
-
+    
     /**
      * For all occurences of keyword in baseString, set the prefix and suffix before and after the keyword.
      *
@@ -630,13 +661,13 @@ public class Strings {
         }
         String baseStringLowered = baseString.toLowerCase();
         String keywordLowered = keyword.toLowerCase();
-
+        
         if (baseStringLowered.indexOf(keywordLowered) == -1) {
             return baseString;
         }
         int searchedUpToIndex = 0;
         StringBuilder returnString = new StringBuilder();
-
+        
         while (baseStringLowered
             .substring(searchedUpToIndex, baseStringLowered.length())
             .indexOf(keywordLowered)
@@ -645,13 +676,13 @@ public class Strings {
                 baseStringLowered
                     .substring(searchedUpToIndex, baseStringLowered.length())
                     .indexOf(keywordLowered);
-
+            
             String textBeforeKeyword =
                 baseString.substring(
                     searchedUpToIndex,
                     searchedUpToIndex + beginOfKeyword);
             returnString.append(textBeforeKeyword);
-
+            
             String appendKeyword =
                 baseString.substring(
                     searchedUpToIndex + beginOfKeyword,
@@ -660,7 +691,7 @@ public class Strings {
             returnString.append(prefix);
             returnString.append(appendKeyword);
             returnString.append(suffix);
-
+            
             searchedUpToIndex =
                 searchedUpToIndex + beginOfKeyword + keyword.length();
         }
@@ -670,16 +701,14 @@ public class Strings {
                     searchedUpToIndex,
                     baseStringLowered.length()));
         }
-
+        
         return returnString.toString();
     }
-
+    
     public static void appendLine(StringBuilder sbMsg, String s) {
         sbMsg.append(s + JavaHelper.EOL);
     }
-
-    public static final Lister TO_STRING_LISTER = new ToStringLister();
-
+    
     public static class ToStringLister<T> implements Lister<T> {
         public String getListString(T obj) {
             return "" + obj;

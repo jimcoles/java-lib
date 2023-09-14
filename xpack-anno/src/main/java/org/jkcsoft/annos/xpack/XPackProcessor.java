@@ -49,7 +49,7 @@ public class XPackProcessor extends AbstractProcessor {
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        log.info(Strings.replace("process called with {0} annotations; env isover = {1}",
+        log.info(Strings.fmt("process called with {0} annotations; env isover = {1}",
                                  annotations.size(),
                                  roundEnv.processingOver())
                 );
