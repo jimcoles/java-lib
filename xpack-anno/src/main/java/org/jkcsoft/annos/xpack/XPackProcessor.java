@@ -10,13 +10,16 @@
 
 package org.jkcsoft.annos.xpack;
 
-import org.apache.log4j.Logger;
 import org.jkcsoft.java.util.JavaHelper;
 import org.jkcsoft.java.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,18 +29,19 @@ import java.util.Set;
  * @author Jim Coles
  */
 @SupportedAnnotationTypes("org.jkcsoft.annos.xpack.XPack")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class XPackProcessor extends AbstractProcessor {
-
-    private static final Logger log = Logger.getLogger(XPackProcessor.class);
-
+    
+    private static final Logger log = LoggerFactory.getLogger(XPackProcessor.class);
+    
     public XPackProcessor() {
-
+    
     }
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
+        log.info("initialized");
     }
     
     @Override
@@ -49,40 +53,43 @@ public class XPackProcessor extends AbstractProcessor {
     
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        log.info(Strings.fmt("process called with {0} annotations; env isover = {1}",
-                                 annotations.size(),
-                                 roundEnv.processingOver())
-                );
+        log.info(Strings.fmt("process called with {0} annotations; env processingOver = {1}",
+                             annotations.size(),
+                             roundEnv.processingOver()) );
+        
         for (TypeElement annotatedElement : annotations) {
             Set<? extends Element> taggedElems = roundEnv.getElementsAnnotatedWith(annotatedElement);
+            XPack xpack = annotatedElement.getAnnotation(XPack.class);
             log.info("tagged: " + JavaHelper.EOL + Strings.buildNewlineList(taggedElems));
+            List<? extends Element> packageChildren = Collections.emptyList();
             for (Element taggedElem : taggedElems) {
                 PackageElement packageElem = (PackageElement) taggedElem;
                 log.info("handling: " + packageElem);
                 packageElem.getQualifiedName();
-                List<? extends Element> packageChildren = packageElem.getEnclosedElements();
+                packageChildren = packageElem.getEnclosedElements();
                 log.info("pack encl: " + JavaHelper.EOL + Strings.buildNewlineList(packageChildren));
             }
-            XPack xpack = null;
-            if (xpack != null && !Strings.isEmpty(xpack.handler())) {
+            List<Class> annotatedClasses = new LinkedList<>();
+            packageChildren.forEach(annoElem -> {
+                if (annoElem.getKind().equals(ElementKind.CLASS)) {
+                
+                }
+            });
+            if (xpack != null) {
                 try {
-                    Class<XPackHandler> handlerClass =
-                        (Class<XPackHandler>) Class.forName(xpack.handler());
-                    XPackHandler handler = handlerClass.newInstance();
-                    handler.handle(null);
+                    XPackHandler handler = xpack.handler().getDeclaredConstructor().newInstance();
+                    handler.handle(annotatedClasses);
                 }
-                catch (ClassNotFoundException e) {
-                    log.error("could not instantiate xpack handler []", e);
-                }
-                catch (InstantiationException e) {
-                    e.printStackTrace();
-                }
-                catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
+            else {
+                log.info("could not find any xpack annotations");
+            }
         }
+        
         return true;
     }
-
+    
 }

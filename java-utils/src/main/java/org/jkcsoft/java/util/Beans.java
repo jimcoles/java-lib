@@ -174,9 +174,9 @@ public class Beans {
                 //Method getter = pd.getReadMethod();
                 Method setter = pd.getWriteMethod();
                 if (pd.getPropertyType() == Integer.class) {
-                    setter.invoke(bean, new Object[]{new Integer(0)});
+                    setter.invoke(bean, 0);
                 } else if (pd.getPropertyType() == Double.class) {
-                    setter.invoke(bean, new Object[]{new Double(0)});
+                    setter.invoke(bean, 0);
                 } else {
                     try {
                         setter.invoke(bean, new Object[]{null});

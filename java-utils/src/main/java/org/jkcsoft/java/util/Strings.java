@@ -408,9 +408,9 @@ public class Strings {
         throws NumberFormatException
     {
         StringTokenizer st = new StringTokenizer(inStr, ",");
-        List ret = new Vector(st.countTokens());
+        List ret = new LinkedList();
         while (st.hasMoreTokens()) {
-            ret.add(new Long(st.nextToken().trim()));
+            ret.add(Long.parseLong(st.nextToken().trim()));
         }
         return ret;
     }

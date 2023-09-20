@@ -19,14 +19,17 @@ import java.util.List;
  * @author Jim Coles
  */
 public class TestXpackHandler implements XPackHandler {
-
+    
+    public static void main(String[] args) {
+    
+    }
     @Test
     public void testPackageAnno() {
-    
+        // should trigger annotations
     }
     
     @Override
     public void handle(List<Class> packageClasses) {
-    
+        System.out.println("package classes" + packageClasses);
     }
 }

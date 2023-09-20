@@ -24,67 +24,30 @@
     <groupId>org.jkcsoft.javalib</groupId>
     <artifactId>java-lib</artifactId>
     <version>2.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
-    <properties>
-        <!-- Where we at. -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <java-source.level>12</java-source.level>
-        <java-compiler.target-level>17</java-compiler.target-level>
-        <!-- Common component version control -->
-        <junit.version>4.12</junit.version>
-    </properties>
+    <modules>
+        <module>bom</module>
+        <module>java-utils</module>
+<!--        <module>xpack-anno</module>-->
+    </modules>
 
     <build>
+        <defaultGoal>package</defaultGoal>
+
         <pluginManagement>
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
+                    <version>3.11.0</version>
                     <configuration>
-                        <source>${java-source.level}</source>
-                        <target>${java-compiler.target-level}</target>
+                        <source>17</source>
+                        <target>17</target>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
-    <!-- Our jkcsoft BOM -->
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- External -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-
-            <!-- Sub-modules -->
-            <dependency>
-                <groupId>org.jkcsoft.javalib</groupId>
-                <artifactId>java-utils</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jkcsoft.javalib.annotations</groupId>
-                <artifactId>xpack-anno</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jkcsoft.javalib.annotations</groupId>
-                <artifactId>xpack-anno-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <modules>
-        <module>java-utils</module>
-        <module>xpack-anno</module>
-        <module>xpack-anno-test</module>
-    </modules>
 
 </project>

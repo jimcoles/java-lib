@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
  * @author Jim Coles
  */
 @Target(ElementType.PACKAGE)
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface XPack {
     /** The handler takes the list of package classes. */
-    String handler() default "";
+    Class<? extends XPackHandler> handler() default PackageUtils.DefaultPackageHandler.class;
 }
