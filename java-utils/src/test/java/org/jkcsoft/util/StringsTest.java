@@ -18,6 +18,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.jkcsoft.java.util.Strings.fmt;
+
 /**
  *
  * @author Jim Coles
@@ -62,7 +64,7 @@ public class StringsTest {
     @Test
     public void testStringFormatter() {
         String template = "place 0 {0}, place 1 {1}, place {2}";
-        String replaced = Strings.fmt(template, "zero", "one", "two");
+        String replaced = fmt(template, "zero", "one", "two");
         Assert.assertEquals("expect string replacement", "place 0 zero, place 1 one, place two", replaced);
         log("replaced string: " + replaced);
     }
@@ -70,8 +72,8 @@ public class StringsTest {
     @Test
     public void testFormatterMemoization() {
         String template = "place 0 {0}, place 1 {1}, place {2}";
-        String fmt1 = Strings.fmt(template, "zero", "one", "two");
-        String fmt2 = Strings.fmt(template, "zero", "one", "two");
+        String fmt1 = fmt(template, "zero", "one", "two");
+        String fmt2 = fmt(template, "zero", "one", "two");
         log("replaced string: " + fmt1);
     }
     
@@ -95,6 +97,14 @@ public class StringsTest {
         log("widget list: " + widgetList);
     }
 
+    @Test
+    public void testLimiter() {
+        var inStr = "1234567890";
+        var limitedStr = Strings.limit(inStr, 5);
+        log(fmt("in string [{0}]. limited string [{1}]", inStr, limitedStr));
+        Assert.assertEquals("string limit", limitedStr, "12345..");
+    }
+    
     private void log(String msg) {
         System.out.println(msg);
     }

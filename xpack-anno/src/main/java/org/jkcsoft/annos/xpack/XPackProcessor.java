@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import javax.tools.StandardLocation;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Annotation processor for my XPack set of annotations.
@@ -57,36 +57,18 @@ public class XPackProcessor extends AbstractProcessor {
                              annotations.size(),
                              roundEnv.processingOver()) );
         
-        for (TypeElement annotatedElement : annotations) {
-            Set<? extends Element> taggedElems = roundEnv.getElementsAnnotatedWith(annotatedElement);
-            XPack xpack = annotatedElement.getAnnotation(XPack.class);
-            log.info("tagged: " + JavaHelper.EOL + Strings.buildNewlineList(taggedElems));
-            List<? extends Element> packageChildren = Collections.emptyList();
-            for (Element taggedElem : taggedElems) {
-                PackageElement packageElem = (PackageElement) taggedElem;
-                log.info("handling: " + packageElem);
-                packageElem.getQualifiedName();
-                packageChildren = packageElem.getEnclosedElements();
-                log.info("pack encl: " + JavaHelper.EOL + Strings.buildNewlineList(packageChildren));
-            }
-            List<Class> annotatedClasses = new LinkedList<>();
-            packageChildren.forEach(annoElem -> {
-                if (annoElem.getKind().equals(ElementKind.CLASS)) {
-                
-                }
-            });
-            if (xpack != null) {
-                try {
-                    XPackHandler handler = xpack.handler().getDeclaredConstructor().newInstance();
-                    handler.handle(annotatedClasses);
-                }
-                catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            else {
-                log.info("could not find any xpack annotations");
-            }
+        Properties properties = new Properties();
+        for (Element element : roundEnv.getElementsAnnotatedWith(XPack.class)) {
+            // Process the annotated element (e.g., class, method, field)
+            // Collect information and add it to the properties
+            properties.setProperty("element_" + element.getSimpleName(), element.toString());
+        }
+        
+        // Generate the resource file (e.g., my_annotations.properties)
+        try (Writer writer = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "my_annotations.properties").openWriter()) {
+            properties.store(writer, "xpack-elements.props");
+        } catch (IOException e) {
+            log.error("", e);
         }
         
         return true;

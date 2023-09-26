@@ -11,6 +11,7 @@ package org.jkcsoft.java.testing;
 
 import junit.framework.TestCase;
 import org.jkcsoft.java.util.LogHelper;
+import org.jkcsoft.java.util.Strings;
 
 import java.text.MessageFormat;
 
@@ -30,6 +31,7 @@ public abstract class BaseTestCase extends TestCase {
     }
 
     public void out(String fmt, Object ... args) {
-        System.out.println(MessageFormat.format(fmt, args));
+        System.out.println(Strings.fmt(fmt, args));
     }
+    
 }

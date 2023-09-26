@@ -386,16 +386,21 @@ public class Strings {
     /**
      * Returns string limited to specified length
      */
-    static public String limit(String s, int length) {
+    
+    static public String limit(String s, int maxLength) {
+        return limit(s, maxLength, "..");
+    }
+    
+    static public String limit(String s, int maxLength, String truncationIndicator) {
         String retString = null;
         if (s == null) {
             retString = null;
         }
-        else if (s.length() <= length) {
+        else if (s.length() <= maxLength) {
             retString = s;
         }
         else {
-            retString = s.substring(0, length - 1);
+            retString = s.substring(0, maxLength) + truncationIndicator;
         }
         return retString;
     }
