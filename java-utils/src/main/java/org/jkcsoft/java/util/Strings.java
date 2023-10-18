@@ -28,9 +28,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class Strings {
     
-    private static final Logger log = LoggerFactory.getLogger(Strings.class);
-    
     public static final Lister TO_STRING_LISTER = new ToStringLister();
+    private static final Logger log = LoggerFactory.getLogger(Strings.class);
     private static final String COMMA = ",";
     
     //----------------------------------------------------------------------------
@@ -42,19 +41,30 @@ public class Strings {
                     .build();
     
     /**
-     * Does string substitution of substrings with args.
+     * Uses Java MessageFormatter. Employs a memo-cache format objects to
+     * avoid recomputation for each call.
      */
     public static String fmt(String template, Object... args) {
+        String formatted = null;
         MessageFormat format = null;
         try {
             // Get the result from the cache or compute it if not present
             format = memoizationCache.get(template, () -> new MessageFormat(template));
         }
-        catch (ExecutionException e) {
-            log.error("error computing string formatter for ["+template+"]" , e);
-            format = new MessageFormat(template);
+        catch (Throwable e) {
+            log.error("error creating MessageFormat for template: [{}]", template, e);
+            formatted = template;
         }
-        return format.format(args);
+        if (format != null) {
+            try {
+                formatted = format.format(args);
+            }
+            catch (IllegalArgumentException e) {
+                log.error("exception applying MessageFormat for template [{}]", template, e);
+                formatted = template;
+            }
+        }
+        return formatted;
     }
     
     public static String replaceAll(String in, String find, String replace) {

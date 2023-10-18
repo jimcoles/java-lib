@@ -63,10 +63,32 @@ public class StringsTest {
     
     @Test
     public void testStringFormatter() {
+        // basic replacer logic
         String template = "place 0 {0}, place 1 {1}, place {2}";
         String replaced = fmt(template, "zero", "one", "two");
         Assert.assertEquals("expect string replacement", "place 0 zero, place 1 one, place two", replaced);
         log("replaced string: " + replaced);
+        
+        // put in a bad format string -> expect no errors
+        testBadFormat("this has a stray single quote ' ");
+        testBadFormat("this has sl4j style braces w/o number {}");
+        testBadFormat("this has mismatched number of args {0}", "one", "two");
+        testBadFormat("this has bad arg index {2}", "one");
+        
+    }
+
+    private void testBadFormat(String badTemplate, Object ... args) {
+        try {
+            String result = fmt(badTemplate, args);
+            log("==> tested template: " + badTemplate);
+            log("==>          output: " + result);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Strings.fmt() should never throw an exception and " +
+                            "should respond with the supplied template.");
+        }
+        
     }
     
     @Test
