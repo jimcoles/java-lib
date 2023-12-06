@@ -17,8 +17,10 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.jkcsoft.java.util.Strings.fmt;
+import static org.jkcsoft.java.util.Strings.mapToString;
 
 /**
  *
@@ -118,7 +120,13 @@ public class StringsTest {
             ",");
         log("widget list: " + widgetList);
     }
-
+    
+    @Test
+    public void testMapLister() {
+        Map map = Map.of("1", "Jim", "2", "Wally", "3", "Dingo");
+        log("map string: " + mapToString(map, ", "));
+    }
+    
     @Test
     public void testLimiter() {
         var inStr = "1234567890";

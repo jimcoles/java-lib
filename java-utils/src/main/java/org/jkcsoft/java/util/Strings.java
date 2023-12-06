@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Collection of String utilities.
@@ -197,6 +196,17 @@ public class Strings {
         return sb.toString();
     }
     
+    public static String mapToString(Map<?,?> map, String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (final Map.Entry<?, ?> entry : map.entrySet()) {
+            count++;
+            sb.append(fmt("[{0} => {1}]", entry.getKey(), entry.getValue()));
+            if (count < map.entrySet().size())
+                sb.append(delimiter);
+        }
+        return sb.toString();
+    }
     /**
      * Returns everything to the right of the first occurence of <code>sub</code>.
      */
@@ -479,7 +489,7 @@ public class Strings {
         String tostring = obj.toString();
         if (tostring == null)
             return def;
-        if (tostring.trim().length() == 0)
+        if (tostring.trim().isEmpty())
             return def;
         return obj.toString();
     }
@@ -610,7 +620,7 @@ public class Strings {
         if (str == null)
             return null;
         
-        String ostr = new String();
+        String ostr = "";
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
             if (!escapeAscii && ((ch >= 0x0020) && (ch <= 0x007e)))
@@ -618,11 +628,9 @@ public class Strings {
             else {
                 ostr += "\\u";
                 String hex = Integer.toHexString(str.charAt(i) & 0xFFFF);
-                if (hex != null) {
-                    if (hex.length() == 2)
-                        ostr += "00";
-                    ostr += hex.toUpperCase(Locale.ENGLISH);
-                }
+                if (hex.length() == 2)
+                    ostr += "00";
+                ostr += hex.toUpperCase(Locale.ENGLISH);
             }
         }
         return (ostr);
