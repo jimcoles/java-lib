@@ -27,9 +27,13 @@ import java.util.*;
  */
 public class Strings {
     
-    public static final Lister TO_STRING_LISTER = new ToStringLister();
     private static final Logger log = LoggerFactory.getLogger(Strings.class);
+    
+    public static final Lister<?> TO_STRING_LISTER = new ToStringLister<>();
     private static final String COMMA = ",";
+    
+    // Override compare method
+    public static final Comparator<Object> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
     
     //----------------------------------------------------------------------------
     // Public Static methods
@@ -196,26 +200,42 @@ public class Strings {
         return sb.toString();
     }
     
-    public static String mapToString(Map<?,?> map, String delimiter) {
+    public static String mapToString(Map<?, ?> map) {
+        return mapToString(map, "\n");
+    }
+    
+    public static String mapToString(Map map, String delimiter) {
+        if (map.isEmpty())
+            return "";
+        
         StringBuilder sb = new StringBuilder();
+        Set<?> keySet;
+        try {
+            keySet = (new TreeMap<>(map)).keySet();
+        }
+        catch (ClassCastException ex) {
+            TreeMap<?, ?> tmap = new TreeMap<>(TO_STRING_COMPARATOR);
+            tmap.putAll(map);
+            keySet = tmap.keySet();
+        }
         int count = 0;
-        for (final Map.Entry<?, ?> entry : map.entrySet()) {
+        for (var key : keySet) {
             count++;
-            sb.append(fmt("[{0} => {1}]", entry.getKey(), entry.getValue()));
-            if (count < map.entrySet().size())
+            sb.append(fmt("[{0} => {1}]", key, map.get(key)));
+            if (count < keySet.size())
                 sb.append(delimiter);
         }
         return sb.toString();
     }
     /**
-     * Returns everything to the right of the first occurence of <code>sub</code>.
+     * Returns everything to the right of the first occurrence of <code>sub</code>.
      */
     public static String restAfterFirst(String input, String sub) {
         return rest(input, sub, true);
     }
     
     /**
-     * Returns everything to the right of the last occurence of <code>sub</code>.
+     * Returns everything to the right of the last occurrence of <code>sub</code>.
      * Good for getting Class name from fully-qualified name.
      */
     public static String restAfterLast(String input, String sub) {

@@ -10,6 +10,7 @@
 
 package org.jkcsoft.util;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jkcsoft.java.util.JavaHelper;
 import org.jkcsoft.java.util.Strings;
 import org.junit.Assert;
@@ -18,9 +19,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import static org.jkcsoft.java.util.Strings.fmt;
-import static org.jkcsoft.java.util.Strings.mapToString;
+import static org.jkcsoft.java.util.Strings.*;
 
 /**
  *
@@ -109,6 +110,14 @@ public class StringsTest {
             this.id = id;
             this.name = name;
         }
+        
+        @Override
+        public String toString() {
+            return "Widget{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+        }
     }
     
     @Test
@@ -123,8 +132,16 @@ public class StringsTest {
     
     @Test
     public void testMapLister() {
-        Map map = Map.of("1", "Jim", "2", "Wally", "3", "Dingo");
+        Map<String, String> map = Map.of("7", "Jim", "1", "Wally", "3", "Dingo");
+        
+        log("map string: " + mapToString(map));
+        
         log("map string: " + mapToString(map, ", "));
+        
+        Map<UUID, Widget> okeyMap = Map.of(UUID.randomUUID(), new Widget(9, "dingo"), UUID.randomUUID(), new Widget(3, "flange"));
+        
+        log("complex keyed map string: " + mapToString(okeyMap));
+        
     }
     
     @Test
