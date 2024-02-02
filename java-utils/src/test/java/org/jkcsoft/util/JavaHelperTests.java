@@ -10,30 +10,33 @@
 
 package org.jkcsoft.util;
 
+import org.jkcsoft.java.testing.BaseTestCase;
+import org.jkcsoft.java.testing.TestUtils;
 import org.jkcsoft.java.util.JavaHelper;
 import org.jkcsoft.java.util.Strings;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.jkcsoft.java.testing.TestUtils.out;
+
 /**
  * @author Jim Coles
  */
-public class JavaHelperTests {
+public class JavaHelperTests extends BaseTestCase {
 
-//    @Test
     public void testStackTrace() {
         System.out.println("this methods's stack info: " + JavaHelper.getCallerStackInfo());
     }
-//    @Test
+
     public void testStackTrace1() {
         System.out.println("a nice exception trace:");
         Exception exception = new Exception();
         exception.printStackTrace();
     }
 
-//    @Test
     public void testPrimCasts() {
         double myDoub = 2.3;
         int myInt = (int) myDoub;
@@ -68,7 +71,6 @@ public class JavaHelperTests {
         public int intVal;
     }
 
-    @Test
     public void testArrayPassing() {
         int[] ints = {1, 2, 3};
         takeInts(ints);
@@ -80,4 +82,15 @@ public class JavaHelperTests {
         System.out.println(intsArg);
         intsArg[1]=999;
     }
+
+    public void testSysPropHelpers() {
+        
+        String cwd = JavaHelper.getCwd();
+        Assert.assertTrue(Strings.isNotEmpty(cwd));
+        out("cwd: [{0}]", cwd);
+        //
+        Assert.assertTrue("EOL not empty", Strings.isNotEmpty(JavaHelper.EOL, false));
+        out("eol char: [{0}]", JavaHelper.EOL);
+    }
+    
 }

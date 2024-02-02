@@ -15,23 +15,12 @@ import org.jkcsoft.java.util.Strings;
 
 import java.text.MessageFormat;
 
+import static org.jkcsoft.java.util.Strings.fmt;
+
 /**
  * @author coles
  */
 public abstract class BaseTestCase extends TestCase {
 
-    protected void setUp() throws Exception {
-//    	Log.init("log4j.xml");
-        LogHelper.init();
-    }
 
-    public void handleException(Throwable ex) {
-        LogHelper.error(this, "Last-ditch exception caught", ex);
-        fail("Last-ditch handler");
-    }
-
-    public void out(String fmt, Object ... args) {
-        System.out.println(Strings.fmt(fmt, args));
-    }
-    
 }

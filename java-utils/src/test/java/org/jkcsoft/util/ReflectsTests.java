@@ -19,6 +19,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
+import static org.jkcsoft.java.testing.TestUtils.out;
+
 /**
  * @author Jim Coles
  */

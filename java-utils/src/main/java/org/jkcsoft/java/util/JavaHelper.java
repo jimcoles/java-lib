@@ -24,122 +24,26 @@ public class JavaHelper {
 
     private static final Log log = LogHelper.getLogger(JavaHelper.class);
 
-    public static final String EOL = System.getProperty("line.separator");
-
-    /**
-     * @param server
-     */
-    public static void safeClose(ServerSocket server) {
-        if (server != null) {
-            try {
-                server.close();
-            } catch (IOException e) {
-                log.error("Upon closing", e);
-            }
-        } else {
-            log.warn("Null ServerSocket sent to safeClose()");
-        }
+    public static final String EOL = System.lineSeparator();
+    public static final String SYS_PROP_LINE_SEPERATOR = "line.separator";
+    public static final String SYS_PROP_CWD = "user.dir";
+    
+    public static boolean toBoolean(Integer obj1) {
+        return !equals(obj1, 0);
     }
-
-    /**
-     * @param outputStream
-     */
-    public static void safeClose(OutputStream outputStream) {
-        if (outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.error("Upon closing", e);
-            }
-        } else {
-            log.warn("Null OutputStream sent to safeClose()");
-        }
+    
+    public static boolean toBoolean(Long obj1) {
+        return !equals(obj1, 0);
     }
-
-    /**
-     * @param socket
-     */
-    public static void safeClose(Socket socket) {
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                log.error("Upon closing", e);
-            }
-        } else {
-            log.warn("Null Socket sent to safeClose()");
-        }
+    
+    public static boolean toBoolean(int value) {
+        return (value != 0);
     }
-
-    /**
-     * @param writer
-     */
-    public static void safeClose(BufferedWriter writer) {
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (IOException e) {
-                log.error("Upon closing", e);
-            }
-        } else {
-            log.warn("Null BufferedWriter sent to safeClose()");
-        }
+    
+    public static int toInt(boolean value) {
+        return (value) ? 1 : 0;
     }
-
-    /**
-     * @param reader
-     */
-    public static void safeClose(BufferedReader reader) {
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                log.error("Upon closing", e);
-            }
-        } else {
-            log.warn("Null BufferedReader sent to safeClose()");
-        }
-    }
-
-    /**
-     * @param writer
-     */
-    public static void safeClose(PrintWriter writer) {
-        if (writer != null) {
-            writer.close();
-        } else {
-            log.warn("Null PrintWriter sent to safeClose()");
-        }
-    }
-
-    /**
-     * Sleeps for sleep millis unless interrupted.
-     *
-     * @param sleep
-     */
-    public static void sleep(long sleep) {
-        try {
-            Thread.sleep(sleep);
-        } catch (InterruptedException e) {
-            log.warn("Thread [" + Thread.currentThread().getName() + "] interrupted during sleeep.");
-        }
-    }
-
-    public static String stackTrace(Throwable th) {
-        if (th == null) return null;
-
-        java.io.StringWriter sw = new java.io.StringWriter();
-        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
-        th.printStackTrace(pw);
-        return sw.toString();
-    }
-
-    public static StackTraceElement getCallerStackInfo() {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement stackTraceElement = stackTrace[2];
-        return stackTraceElement;
-    }
-
+    
     /**
      * @return true if both values are non-null and obj1.equals(obj2)
      */
@@ -150,7 +54,7 @@ public class JavaHelper {
         }
         return eq;
     }
-
+    
     public static boolean equals(String obj1, String obj2) {
         boolean eq = false;
         if (obj1 != null && obj2 != null) {
@@ -160,7 +64,7 @@ public class JavaHelper {
         }
         return eq;
     }
-
+    
     public static boolean equals(Integer obj1, int obj2) {
         boolean eq = false;
         if (obj1 != null) {
@@ -168,7 +72,7 @@ public class JavaHelper {
         }
         return eq;
     }
-
+    
     public static boolean equals(Long obj1, long obj2) {
         boolean eq = false;
         if (obj1 != null) {
@@ -176,7 +80,7 @@ public class JavaHelper {
         }
         return eq;
     }
-
+    
     public static boolean equals(Boolean obj1, boolean obj2) {
         boolean eq = false;
         if (obj1 != null) {
@@ -184,23 +88,26 @@ public class JavaHelper {
         }
         return eq;
     }
-
-    public static boolean toBoolean(Integer obj1) {
-        return !equals(obj1, 0);
+    
+    public static String getCwd() {
+        return System.getProperty(SYS_PROP_CWD);
     }
+    
+    public static String stackTrace(Throwable th) {
+        if (th == null) return null;
 
-    public static boolean toBoolean(Long obj1) {
-        return !equals(obj1, 0);
+        java.io.StringWriter sw = new java.io.StringWriter();
+        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+        th.printStackTrace(pw);
+        return sw.toString();
     }
-
-    public static boolean toBoolean(int value) {
-        return (value != 0);
+    
+    public static StackTraceElement getCallerStackInfo() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement stackTraceElement = stackTrace[2];
+        return stackTraceElement;
     }
-
-    public static int toInt(boolean value) {
-        return (value) ? 1 : 0;
-    }
-
+    
     public static InetAddress getUsefulInetAddr() throws UnknownHostException {
         InetAddress returnInetAddr = InetAddress.getLocalHost();
         int usefulCount = 0;
@@ -223,7 +130,7 @@ public class JavaHelper {
                         if (usefulCount == 0) returnInetAddr = inetAddr;
                         usefulCount++;
                     } else {
-                        // 
+                        //
                     }
                 }
             }
@@ -240,6 +147,19 @@ public class JavaHelper {
 
         log.debug("Returning inet addr [" + returnInetAddr.toString() + "]");
         return returnInetAddr;
+    }
+    
+    /**
+     * Sleeps for sleep millis unless interrupted.
+     *
+     * @param sleep
+     */
+    public static void sleep(long sleep) {
+        try {
+            Thread.sleep(sleep);
+        } catch (InterruptedException e) {
+            log.warn("Thread [" + Thread.currentThread().getName() + "] interrupted during sleeep.");
+        }
     }
 
     public static String computeUqName(Class clazz) {
@@ -277,4 +197,91 @@ public class JavaHelper {
     public static void out(String line) {
         System.out.println(line);
     }
+    
+    /**
+     * @param server
+     */
+    public static void safeClose(ServerSocket server) {
+        if (server != null) {
+            try {
+                server.close();
+            } catch (IOException e) {
+                log.error("Upon closing", e);
+            }
+        } else {
+            log.warn("Null ServerSocket sent to safeClose()");
+        }
+    }
+    
+    /**
+     * @param outputStream
+     */
+    public static void safeClose(OutputStream outputStream) {
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                log.error("Upon closing", e);
+            }
+        } else {
+            log.warn("Null OutputStream sent to safeClose()");
+        }
+    }
+    
+    /**
+     * @param socket
+     */
+    public static void safeClose(Socket socket) {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                log.error("Upon closing", e);
+            }
+        } else {
+            log.warn("Null Socket sent to safeClose()");
+        }
+    }
+    
+    /**
+     * @param writer
+     */
+    public static void safeClose(BufferedWriter writer) {
+        if (writer != null) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                log.error("Upon closing", e);
+            }
+        } else {
+            log.warn("Null BufferedWriter sent to safeClose()");
+        }
+    }
+    
+    /**
+     * @param reader
+     */
+    public static void safeClose(BufferedReader reader) {
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                log.error("Upon closing", e);
+            }
+        } else {
+            log.warn("Null BufferedReader sent to safeClose()");
+        }
+    }
+    
+    /**
+     * @param writer
+     */
+    public static void safeClose(PrintWriter writer) {
+        if (writer != null) {
+            writer.close();
+        } else {
+            log.warn("Null PrintWriter sent to safeClose()");
+        }
+    }
+    
 }

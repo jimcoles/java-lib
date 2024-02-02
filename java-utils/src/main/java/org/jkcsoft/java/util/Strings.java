@@ -50,6 +50,9 @@ public class Strings {
     public static String fmt(String template, Object... args) {
         String formatted = null;
         MessageFormat format = null;
+        if (args == null || args.length == 0) {
+            return template;
+        }
         try {
             // Get the result from the cache or compute it if not present
             format = memoizationCache.get(template, () -> new MessageFormat(template));
@@ -518,12 +521,20 @@ public class Strings {
      * Returns false if the String provided is equals to null, has a
      * length equal to 0
      */
+    public static boolean isEmpty(String s, boolean trim) {
+        return s == null || ( trim ? s.trim().isEmpty() : s.isEmpty() );
+    }
+    
     public static boolean isEmpty(String s) {
-        return s == null || s.trim().length() == 0;
+        return isEmpty(s, true);
     }
     
     public static boolean isNotEmpty(String s) {
         return !isEmpty(s);
+    }
+    
+    public static boolean isNotEmpty(String s, boolean trim) {
+        return !isEmpty(s, trim);
     }
     
     /**

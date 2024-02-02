@@ -11,6 +11,7 @@
 package org.jkcsoft.util;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.jkcsoft.java.testing.BaseTestCase;
 import org.jkcsoft.java.util.JavaHelper;
 import org.jkcsoft.java.util.Strings;
 import org.junit.Assert;
@@ -27,10 +28,9 @@ import static org.jkcsoft.java.util.Strings.*;
  *
  * @author Jim Coles
  */
-public class StringsTest {
+public class StringsTest extends BaseTestCase {
 
-    @Test
-    public void testStrings() {
+    public void testListsToStrings() {
         List<String> stringList = Arrays.asList("a", "b", "c");
         System.out.println("List of abc with comma: " + JavaHelper.EOL
                 + Strings.buildCommaDelList(stringList));
@@ -150,6 +150,14 @@ public class StringsTest {
         var limitedStr = Strings.limit(inStr, 5);
         log(fmt("in string [{0}]. limited string [{1}]", inStr, limitedStr));
         Assert.assertEquals("string limit", limitedStr, "12345..");
+    }
+
+    public void testEmptyPredicates() {
+        Assert.assertTrue(Strings.isEmpty(null));
+        Assert.assertTrue(Strings.isEmpty(""));
+        Assert.assertFalse(Strings.isEmpty("abc"));
+        Assert.assertTrue(Strings.isEmpty("\n"));   // empty cuz defaults to trim which rems lead/trail new-line
+        Assert.assertTrue(Strings.isNotEmpty("\n", false)); // not empty if we don't trim
     }
     
     private void log(String msg) {
