@@ -24,6 +24,9 @@ public class Time {
     private static final Map<String, DateTimeFormatter> formatterMemos = new HashMap<>();
     
     public static String format(Instant instant, String pattern) {
+        
+        if (instant == null) return "(null time)";
+        
         DateTimeFormatter formatter = formatterMemos.computeIfAbsent(
             pattern,
             pattern2 ->

@@ -24,6 +24,7 @@ public class DateTimeTests {
     
     @Test
     public void testTimeFormat() {
-        out("formatted time {0}", Time.format(Instant.now(), "HH:mm:ss.SSS"));
+        out("formatted time [{0}]", Time.format(Instant.now(), "HH:mm:ss.SSS"));
+        out("formatted time [{0}]", Time.format(null, "HH:mm:ss.SSS"));
     }
 }
