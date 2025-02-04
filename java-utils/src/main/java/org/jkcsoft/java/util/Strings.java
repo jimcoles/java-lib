@@ -21,31 +21,32 @@ import java.util.*;
 
 /**
  * Collection of String utilities.
- *
  * @author
  * @version 1.0
  */
 public class Strings {
     
-    private static final Logger log = LoggerFactory.getLogger(Strings.class);
-    
-    public static final Lister<?> TO_STRING_LISTER = new ToStringLister<>();
-    private static final String COMMA = ",";
-    
+    public static final Lister TO_STRING_LISTER = new ToStringLister<>();
     // Override compare method
     public static final Comparator<Object> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
+    private static final Logger log = LoggerFactory.getLogger(Strings.class);
+    private static final String COMMA = ",";
+    private static final Cache<String, MessageFormat> memoizationCache =
+        CacheBuilder.newBuilder()
+                    .maximumSize(1000) // Set the maximum cache size
+                    .build();
     
     //----------------------------------------------------------------------------
     // Public Static methods
     //----------------------------------------------------------------------------
-    private static final Cache<String, MessageFormat> memoizationCache =
-        CacheBuilder.newBuilder()
-                    .maximumSize(100) // Set the maximum cache size
-                    .build();
+    private static Map<StringMultiplierKey, String> stringMultiplierCache = new HashMap<>();
     
     /**
      * Uses Java MessageFormatter. Employs a memo-cache format objects to
      * avoid recomputation for each call.
+     * @param template A text message format per java.text.MessageFormat. E.g. "{0}"
+     * @param args
+     * @see MessageFormat
      */
     public static String fmt(String template, Object... args) {
         String formatted = null;
@@ -55,7 +56,10 @@ public class Strings {
         }
         try {
             // Get the result from the cache or compute it if not present
-            format = memoizationCache.get(template, () -> new MessageFormat(template));
+            format = memoizationCache.get(template, () -> {
+//                String cleanTemplate = replaceAll(template, "'", "''");
+                return new MessageFormat(template);
+            });
         }
         catch (Throwable e) {
             log.error("error creating MessageFormat for template: [{}]", template, e);
@@ -102,7 +106,6 @@ public class Strings {
      * correct (e.g. on an intranet it may be okay with just a name) and
      * does not gurantee a valid Internet email address but it takes
      * care of the most obvious Internet mail address format errors.
-     *
      * @param emailAddrString a String representing an email address
      * @return true if valid, false otherwise
      */
@@ -119,7 +122,6 @@ public class Strings {
     /**
      * Returns true if the specified string matches a string in the set
      * of provided valid strings, ignoring case if specified.
-     *
      * @param value        the String validate
      * @param validStrings A sorted array of valid Strings
      * @param ignoreCase   if true, case is ignored when comparing the value
@@ -180,7 +182,7 @@ public class Strings {
     
     public static <T> String buildNewlineList(Collection<T> items) {
         if (items != null)
-            return buildDelList(items, new ToStringLister<T>(), JavaHelper.EOL);
+            return buildDelList(items, new ToStringLister<>(), JavaHelper.EOL);
         else
             return "";
     }
@@ -230,6 +232,7 @@ public class Strings {
         }
         return sb.toString();
     }
+    
     /**
      * Returns everything to the right of the first occurrence of <code>sub</code>.
      */
@@ -462,6 +465,8 @@ public class Strings {
         }
         return ret;
     }
+
+//    private static Map<String, String> multStringMap = new HashMap<>();
     
     /**
      *
@@ -475,8 +480,6 @@ public class Strings {
         }
         return true;
     }
-
-//    private static Map<String, String> multStringMap = new HashMap<>();
     
     /**
      *
@@ -491,15 +494,17 @@ public class Strings {
      * @param multiPrefix optional prefix of repeating cycle after the first
      */
     public static String multiplyString(String baseStr, int num, String multiPrefix) {
-        String computedString = "";
-        StringBuilder buf = new StringBuilder(baseStr.length() * num);
-        for (int idx = 0; idx < num; idx++) {
-            if (multiPrefix != null && idx > 0)
-                buf.append(multiPrefix);
-            buf.append(baseStr);
-        }
-        computedString = buf.toString();
-        return computedString;
+        final StringMultiplierKey key = new StringMultiplierKey(baseStr, multiPrefix, num);
+        return stringMultiplierCache.computeIfAbsent(key, stringMultiplierKey -> {
+//            baseStr.repeat(num);
+            StringBuilder buf = new StringBuilder(baseStr.length() * num);
+            for (int idx = 0; idx < num; idx++) {
+                if (multiPrefix != null && idx > 0)
+                    buf.append(multiPrefix);
+                buf.append(baseStr);
+            }
+            return buf.toString();
+        });
     }
     
     /**
@@ -522,7 +527,7 @@ public class Strings {
      * length equal to 0
      */
     public static boolean isEmpty(String s, boolean trim) {
-        return s == null || ( trim ? s.trim().isEmpty() : s.isEmpty() );
+        return s == null || (trim ? s.trim().isEmpty() : s.isEmpty());
     }
     
     public static boolean isEmpty(String s) {
@@ -669,7 +674,6 @@ public class Strings {
     
     /**
      * For all occurences of the keywords in baseString, set the prefix and suffix before and after the keyword.
-     *
      * @param baseString
      * @param keywords
      * @param prefix
@@ -697,7 +701,6 @@ public class Strings {
     
     /**
      * For all occurences of keyword in baseString, set the prefix and suffix before and after the keyword.
-     *
      * @param baseString
      * @param keyword
      * @param prefix
@@ -768,4 +771,22 @@ public class Strings {
             return "" + obj;
         }
     }
+    
+    public record StringMultiplierKey(String multStr, String preFixStr, Integer multNum) {
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof final StringMultiplierKey stringMultiplierKey)) {
+                return false;
+            }
+            return Objects.equals(multStr, stringMultiplierKey.multStr) &&
+                Objects.equals(preFixStr, stringMultiplierKey.preFixStr) && Objects.equals(
+                multNum, stringMultiplierKey.multNum);
+        }
+        
+    }
+    
 }

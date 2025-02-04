@@ -13,6 +13,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 
 import java.io.File;
+import java.io.InputStream;
+
+import static org.jkcsoft.java.util.Strings.fmt;
 
 /**
  * @author coles
@@ -65,6 +68,14 @@ public class Files {
 
         FileUtils.copyFile(authFile, archFile1);
 
+    }
+    
+    public static InputStream getResourceFis(Object caller, String cpRelativePath) {
+        InputStream stream = caller.getClass().getClassLoader().getResourceAsStream(cpRelativePath);
+        if (stream == null) {
+            throw new IllegalArgumentException(fmt("resource not found [{0}]", cpRelativePath));
+        }
+        return stream;
     }
 
 }

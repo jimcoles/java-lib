@@ -22,6 +22,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Various helpers for Bean operations.  Uses Introspection.
@@ -98,14 +100,14 @@ public class Beans {
      * @return
      * @throws Exception
      */
-    public static Object selectByKey(Collection objectCollection, String keyPropName, Object value)
+    public static <T> T selectByKey(Collection<T> objectCollection, String keyPropName, Object value)
         throws Exception
     {
-        Object theBean = null;
+        T theBean = null;
         if (objectCollection != null) {
-            Iterator iter = objectCollection.iterator();
+            Iterator<T> iter = objectCollection.iterator();
             while (iter.hasNext()) {
-                Object o = iter.next();
+                T o = iter.next();
                 if (get(o, keyPropName).equals(value)) {
                     theBean = o;
                     break;
@@ -113,6 +115,10 @@ public class Beans {
             }
         }
         return theBean;
+    }
+    
+    public static <T> Collection<T> select(Collection<T> objectCollection, Predicate<T> filter) {
+        return objectCollection.stream().filter(filter).collect(Collectors.toList());
     }
     
     public static Object get(Object bean, String propName)

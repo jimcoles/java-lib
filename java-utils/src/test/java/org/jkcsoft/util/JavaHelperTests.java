@@ -31,12 +31,6 @@ public class JavaHelperTests extends BaseTestCase {
         System.out.println("this methods's stack info: " + JavaHelper.getCallerStackInfo());
     }
 
-    public void testStackTrace1() {
-        System.out.println("a nice exception trace:");
-        Exception exception = new Exception();
-        exception.printStackTrace();
-    }
-
     public void testPrimCasts() {
         double myDoub = 2.3;
         int myInt = (int) myDoub;
@@ -48,9 +42,9 @@ public class JavaHelperTests extends BaseTestCase {
 //    @Test
     public void testArrayTypes() {
         int[][] ints = new int[][] {{1, 2, 3}};
-        double doubles[] = new double[3];
-        String strings[] = new String[3];
-        MyClass myClasss[] = new MyClass[3];
+        double[] doubles = new double[3];
+        String[] strings = new String[3];
+        MyClass[] myClasss = new MyClass[3];
         printStuff(ints);
         printStuff(doubles);
         printStuff(strings);

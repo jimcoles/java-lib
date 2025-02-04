@@ -58,13 +58,13 @@ public class StringsTest extends BaseTestCase {
         testMultString("X", 5, null);
         testMultString("X", 3, null);
         testMultString("X", 5, "-");
+        testMultString("X", 5, "-");
     }
 
     private void testMultString(String baseStr, int num, String multiPrefix) {
         log("test: expect " + num + " " + baseStr + " => " + Strings.multiplyString(baseStr, num, multiPrefix));
     }
     
-    @Test
     public void testStringFormatter() {
         // basic replacer logic
         String template = "place 0 {0}, place 1 {1}, place {2}";
@@ -74,6 +74,7 @@ public class StringsTest extends BaseTestCase {
         
         // put in a bad format string -> expect no errors
         testBadFormat("this has a stray single quote ' ");
+        testBadFormat("this has a singe-quoted arg '{0}'", "one");
         testBadFormat("this has sl4j style braces w/o number {}");
         testBadFormat("this has mismatched number of args {0}", "one", "two");
         testBadFormat("this has bad arg index {2}", "one");
@@ -120,7 +121,6 @@ public class StringsTest extends BaseTestCase {
         }
     }
     
-    @Test
     public void testLister() {
         List<Widget> widgets = List.of(new Widget(1, "fred"), new Widget(2, "dingo"));
         String widgetList = Strings.buildDelList(
